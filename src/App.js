@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 // import Radium, { StyleRoot } from 'radium';
 import logo from './logo.svg';
-import './App.css';
+import classes from './App.css';
 import Person from './Person/Person'
 
 class App extends Component {
@@ -66,67 +66,52 @@ class App extends Component {
   }
 
   render() {
-
-    const style = {
-      backgroundColor: 'green',
-      color: 'white',
-      font: 'inherit',
-      border: '1px solid blue',
-      padding: '8px',
-      cursor: 'pointer',
-      // ':hover': {
-      //   backgroundColor: 'lightgreen',
-      //   color: 'black'
-      // }
-    }
-
     // how to chek if else to make toggle button, call {persons}
     let persons = null;
+    let btnClass = '';
 
     if(this.state.showPersons){
       persons = (
         <div>
           {this.state.persons.map((person, index) => {
-            return <Person 
+            return <Person
+            click={() => this.deletePersonHandler(index)}  
             name={person.name} 
             age={person.age} 
-            click={() => this.deletePersonHandler(index)} 
             key={person.id}
             changed={(event) => this.changeNameHandler(event, person.id)}/>
           })}
         </div> 
       )
-
-      style.backgroundColor = 'red';
       // style[':hover'] = {
       //   backgroundColor: 'salmon',
       //   color: 'black'
       // }
+      btnClass = classes.red;
     }
 
     // give dynamic classes, call className={classes}
     // let classes = ['red', 'bold'].join(' ');
 
     // caralain pake elseif
-    let classes = [];
+    let assignClasses = [];
     if (this.state.persons.length <= 2) {
-      classes.push('red'); //classes = ['red']
+      assignClasses.push(classes.red); //classes = ['red']
     }
     if (this.state.persons.length <= 1) {
-      classes.push('bold'); //classes = ['red', 'bold'] cara menggunakannya classes.join(' ')
+      assignClasses.push(classes.bold); //classes = ['red', 'bold'] cara menggunakannya classes.join(' ')
     }
 
     return (
       // <StyleRoot>
-        <div className="App">
-          <header className="App-header">
-            <img src={logo} className="App-logo" alt="logo" />
-            <h1 className="App-title">Welcome to React</h1>
-            <p className={classes}>Learn React Js</p>
+        <div className={classes.App}>
+          <header className={classes.Appheader}>
+            <img src={logo} className={classes.Applogo} alt="logo" />
+            <h1 className={classes.Apptitle}>Welcome to React</h1>
+            <p className={assignClasses.join(' ')}>Learn React Js</p>
           </header>
-          <p className="App-intro">
-            <button
-            style={style} 
+          <p className={classes.Appintro}>
+            <button className={btnClass}
             onClick={this.togglePersonHandler}
             >Switch Name</button>
             {persons}
