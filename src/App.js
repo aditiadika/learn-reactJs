@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+// import Radium, { StyleRoot } from 'radium';
 import logo from './logo.svg';
 import './App.css';
 import Person from './Person/Person'
@@ -14,7 +15,7 @@ class App extends Component {
       {name:"Yatno", age:"19"}
     ],
     otherState: 'some other value',
-    showPersons: false
+    showPersons: false,
     // untuk manggil state menggunakan "this"
   }
 
@@ -34,16 +35,27 @@ class App extends Component {
   // }
 
   // event.target.value untuk store/send value
-  changeNameHandler = (event) => {
-    this.setState({persons: [
-      {name: "dika", age:"28"},
-      {name: event.target.value, age:"26"},
-      {name:"Yatno", age:"20"}
-    ] })
+  changeNameHandler = (event, id) => {
+    const personIndex = this.state.person.findIndex(p => {
+      return p.id === id;
+    });
+
+    const person = {
+      ...this.state.persons[personIndex]
+    };
+
+    person.name = event.target.value;
+
+    const persons = [...this.state.persons];
+    persons[personIndex] = person;
+
+    this.setState({persons: persons});
   }
 
   deletePersonHandler = (personIndex) => {
-    const persons = this.state.persons;
+    // menggunkan ...this.state untuk remove person
+    // const persons = this.state.persons;
+    const persons = [...this.state.persons]
     persons.splice(personIndex, 1);
     this.setState({persons:persons}) 
   }
@@ -56,15 +68,21 @@ class App extends Component {
   render() {
 
     const style = {
-      backgroundColor: 'white',
+      backgroundColor: 'green',
+      color: 'white',
       font: 'inherit',
       border: '1px solid blue',
       padding: '8px',
       cursor: 'pointer',
+      // ':hover': {
+      //   backgroundColor: 'lightgreen',
+      //   color: 'black'
+      // }
     }
 
     // how to chek if else to make toggle button, call {persons}
     let persons = null;
+
     if(this.state.showPersons){
       persons = (
         <div>
@@ -72,29 +90,54 @@ class App extends Component {
             return <Person 
             name={person.name} 
             age={person.age} 
-            click={() => this.deletePersonHandler(index)} />
+            click={() => this.deletePersonHandler(index)} 
+            key={person.id}
+            changed={(event) => this.changeNameHandler(event, person.id)}/>
           })}
         </div> 
       )
+
+      style.backgroundColor = 'red';
+      // style[':hover'] = {
+      //   backgroundColor: 'salmon',
+      //   color: 'black'
+      // }
+    }
+
+    // give dynamic classes, call className={classes}
+    // let classes = ['red', 'bold'].join(' ');
+
+    // caralain pake elseif
+    let classes = [];
+    if (this.state.persons.length <= 2) {
+      classes.push('red'); //classes = ['red']
+    }
+    if (this.state.persons.length <= 1) {
+      classes.push('bold'); //classes = ['red', 'bold'] cara menggunakannya classes.join(' ')
     }
 
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          <button
-          style={style} 
-          onClick={this.togglePersonHandler}
-          >Switch Name</button>
-          {persons}
-        </p>
-      </div>
+      // <StyleRoot>
+        <div className="App">
+          <header className="App-header">
+            <img src={logo} className="App-logo" alt="logo" />
+            <h1 className="App-title">Welcome to React</h1>
+            <p className={classes}>Learn React Js</p>
+          </header>
+          <p className="App-intro">
+            <button
+            style={style} 
+            onClick={this.togglePersonHandler}
+            >Switch Name</button>
+            {persons}
+          </p>
+        </div>
+      // </StyleRoot>
     );
     // return React.createElement('div', {className: "App"}, React.createElement('h1', null, 'works now!'));
   }
 }
 
+// export default Radium(App);
 export default App;
+
